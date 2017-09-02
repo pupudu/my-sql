@@ -6,9 +6,15 @@
   },
   "parserOptions": {
     "ecmaVersion": 6,
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
   },
   "extends": "eslint:recommended",
+  "plugins": [
+    "prefer-object-spread"
+  ],
   "rules": {
     // Errors
     "valid-jsdoc": ["error", {
@@ -62,11 +68,71 @@
     // ES6
     "arrow-body-style": ["error"],
     "no-var": ["error"],
-    "prefer-const": ["error"],
 
     // Variables
     "no-undef-init": ["error"],
     "init-declarations": ["error"],
-    "no-use-before-define": ["error"]
+    "no-use-before-define": ["error"],
+    "prefer-object-spread/prefer-object-spread": ["error"],
+    "array-bracket-spacing": [ "error", "always" ],
+    "camelcase": "warn",
+    "class-methods-use-this": "error",
+    "comma-style": [ "error", "last" ],
+    "curly": [ "error","multi"],
+    "dot-notation": [ "error", { "allowKeywords": true } ],
+    "guard-for-in": "error",
+
+    "jsx-quotes": [ "error", "prefer-double" ],
+
+    "no-bitwise": 0,
+    "no-caller": "error",
+    "no-cond-assign": [ "error", "except-parens" ],
+    "no-debugger": "error",
+    "no-empty": "error",
+    "no-empty-function": "error",
+    "no-lone-blocks": "error",
+    "no-extend-native": "error",
+    "no-irregular-whitespace": "error",
+    "no-iterator": "error",
+    "no-multi-str": "error",
+    "no-new": "warn",
+    "no-proto": "error",
+    "no-script-url": "error",
+    "no-sequences": "error",
+    "no-shadow": "error",
+    "no-undef": "error",
+    "no-unused-expressions": 0,
+    "no-unused-vars": "error",
+    "no-with": "error",
+    "no-redeclare": "error",
+
+
+    "no-useless-constructor": "error",
+    "no-useless-rename": ["error", {
+      "ignoreDestructuring": true,
+      "ignoreImport": true,
+      "ignoreExport": true
+    }],
+
+    "prefer-const": ["error", {
+      "destructuring": "any",
+      "ignoreReadBeforeAssign": false
+    }],
+    "generator-star-spacing": ["error", {"before": true, "after": true}],
+    "no-const-assign": "error",
+    "no-empty-pattern": "error",
+    "prefer-arrow-callback": "error",
+    "prefer-rest-params": "error",
+    "prefer-spread": "error",
+    "prefer-template": "error",
+    "template-curly-spacing": ["error", "never"],
+    "yield-star-spacing": "error",
+
+    "object-curly-spacing": [ "error", "always" ],
+    "quotes": [ "error", "single", "avoid-escape" ],
+
+    "semi-spacing": "error",
+    "valid-typeof": "error",
+    "wrap-iife": [ "error", "inside" ]
   }
 }
