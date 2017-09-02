@@ -1,5 +1,9 @@
 # My-Sql
 
+[![Code Climate](https://codeclimate.com/github/pupudu/my-sql/badges/gpa.svg)](https://codeclimate.com/github/pupudu/my-sql)
+[![Build Status](https://travis-ci.org/pupudu/my-sql.svg?branch=master)](https://travis-ci.org/pupudu/my-sql)
+[![Coverage Status](https://coveralls.io/repos/github/pupudu/my-sql/badge.svg?branch=master)](https://coveralls.io/github/pupudu/my-sql?branch=master)
+
 my-sql is a wrapper on the popular npm [mysql](https://www.npmjs.com/package/mysql) 
 package for providing means to painlessly interact with a mysql database. 
 
