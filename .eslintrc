@@ -20,30 +20,30 @@
     "valid-jsdoc": ["error", {
       "requireReturn": false
     }],
-    "no-unsafe-negation": ["error"],
-    "no-template-curly-in-string": ["error"],
+    "no-unsafe-negation": "error",
+    "no-template-curly-in-string": "error",
     "no-extra-parens": ["error", "all"],
 
     // Best Practices
-    "eqeqeq": ["error"],
-    "array-callback-return": ["error"],
-    "no-useless-escape": ["error"],
+    "eqeqeq": "error",
+    "array-callback-return": "error",
+    "no-useless-escape": "error",
     "complexity": ["error", 10],
-    "no-alert": ["error"],
-    "no-else-return": ["error"],
-    "no-eval": ["error"],
-    "no-loop-func": ["error"],
+    "no-alert": "error",
+    "no-else-return": "error",
+    "no-eval": "error",
+    "no-loop-func": "error",
     "no-magic-numbers": ["error", { "ignoreArrayIndexes": true, "ignore": [0, 1, -1] }],
-    "no-multi-spaces": ["error"],
+    "no-multi-spaces": "error",
 
     // NodeJs
-    "callback-return": ["error"],
-    "handle-callback-err": ["error"],
+    "callback-return": "error",
+    "handle-callback-err": "error",
 
     // Stylic
-    "no-unneeded-ternary": ["error"],
-    "comma-spacing": ["error"],
-    "eol-last": ["error"],
+    "no-unneeded-ternary": "error",
+    "comma-spacing": "error",
+    "eol-last": "error",
     "consistent-this": ["error", "_this"],
     "comma-dangle": ["error", "never"],
     "indent": ["error", 4, { "SwitchCase": 1 }],
@@ -51,7 +51,7 @@
     "max-depth": ["error", 5],
     "max-params": ["error", 5],
     "new-cap": ["error", {"capIsNewExceptions": ["Router"]}],
-    "no-multiple-empty-lines": ["error"],
+    "no-multiple-empty-lines": "error",
     "func-call-spacing": ["error", "never"],
     "require-jsdoc": ["error", {
       "require": {
@@ -63,22 +63,20 @@
     }],
     "space-before-function-paren": ["error", {"anonymous": "always", "named": "never", "asyncArrow": "always"}],
     "space-before-blocks": ["error", {"functions": "always", "keywords": "always", "classes": "always" }],
-    "semi": ["error"],
+    "semi": "error",
 
     // ES6
-    "arrow-body-style": ["error"],
-    "no-var": ["error"],
+    "arrow-body-style": "error",
+    "no-var": "error",
 
     // Variables
-    "no-undef-init": ["error"],
-    "init-declarations": ["error"],
-    "no-use-before-define": ["error"],
-    "prefer-object-spread/prefer-object-spread": ["error"],
-    "array-bracket-spacing": [ "error"],
+    "no-undef-init": "error",
+    "init-declarations": "error",
+    "no-use-before-define": "error",
+    "prefer-object-spread/prefer-object-spread": "error",
+    "array-bracket-spacing": "error",
     "camelcase": "warn",
-    "class-methods-use-this": "error",
     "comma-style": [ "error", "last" ],
-    "curly": [ "error","multi"],
     "dot-notation": [ "error", { "allowKeywords": true } ],
     "guard-for-in": "error",
 
@@ -91,7 +89,9 @@
     "no-empty": "error",
     "no-empty-function": "error",
     "no-lone-blocks": "error",
-    "no-extend-native": "error",
+    "no-extend-native": ["error", {
+      "exceptions": ["Error"]
+    }],
     "no-irregular-whitespace": "error",
     "no-iterator": "error",
     "no-multi-str": "error",
@@ -99,13 +99,14 @@
     "no-proto": "error",
     "no-script-url": "error",
     "no-sequences": "error",
-    "no-shadow": "error",
+    "no-shadow": ["warn", {
+      "allow": ["resolve", "reject", "done", "cb", "err"]
+    }],
     "no-undef": "error",
     "no-unused-expressions": 0,
     "no-unused-vars": "error",
     "no-with": "error",
     "no-redeclare": "error",
-
 
     "no-useless-constructor": "error",
     "no-useless-rename": ["error", {
@@ -128,11 +129,19 @@
     "template-curly-spacing": ["error", "never"],
     "yield-star-spacing": "error",
 
-    "object-curly-spacing": [ "error", "always" ],
+    "object-curly-spacing": [ "error", "never" ],
     "quotes": [ "error", "single", "avoid-escape" ],
 
     "semi-spacing": "error",
     "valid-typeof": "error",
     "wrap-iife": [ "error", "inside" ]
-  }
+  },
+  "overrides": [
+    {
+      "files": [ "**/*.test.js" ],
+      "rules": {
+        "prefer-arrow-callback": "off"
+      }
+    }
+  ]
 }
