@@ -6,8 +6,8 @@ import queryBuilder from '../builder';
 import {expect} from 'chai';
 import '../../setupTests';
 
-describe('Query Builder', function () {
-    it('pushes a middleware to the middleware array and then removes it', function () {
+describe('Query Builder', () => {
+    it('pushes a middleware to the middleware array and then removes it', () => {
         queryBuilder.use('test', () => '');
 
         expect(queryBuilder.middleware.length).to.be.gte(1);
@@ -17,7 +17,7 @@ describe('Query Builder', function () {
         expect(queryBuilder.middleware.length).to.eq(0);
     });
 
-    it('Uses a middleware which is pushed to the array', function () {
+    it('Uses a middleware which is pushed to the array', () => {
 
         const FAKE_LIMIT = 10;
 
@@ -34,7 +34,7 @@ describe('Query Builder', function () {
         queryBuilder.removeMiddleware('test');
     });
 
-    it('returns an error when query is not sent to parseQuery', function () {
+    it('returns an error when query is not sent to parseQuery', () => {
 
         // Case 1: options is not provided
         try {
