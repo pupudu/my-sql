@@ -1,0 +1,25 @@
+# Source Files and dev tools
+src/
+gulpfile.js
+docs
+git-hooks
+
+# Tests and Test examples
+
+# Config Files
+LICENSE
+.idea
+.eslintrc
+.gitignore
+.babelrc
+.codeclimate.yml
+.travis.yml
+
+# Auto Generating Files
+yarn.lock
+coverage/
+.nyc_output/
+
+# Other files
+CONTRIBUTING.md
+logo.png

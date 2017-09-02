@@ -74,7 +74,7 @@
     "init-declarations": ["error"],
     "no-use-before-define": ["error"],
     "prefer-object-spread/prefer-object-spread": ["error"],
-    "array-bracket-spacing": [ "error", "always" ],
+    "array-bracket-spacing": [ "error"],
     "camelcase": "warn",
     "class-methods-use-this": "error",
     "comma-style": [ "error", "last" ],
