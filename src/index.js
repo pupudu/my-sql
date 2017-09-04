@@ -14,6 +14,7 @@ import mysql, {
 } from 'mysql';
 import mysqlFacade from './mysqlFacade';
 import dbManager from './dbManager';
+import queryBuilder from './query/builder';
 
 Error.prototype.appendDetails = function (className, method, cause) {
     this.path = `${(this.path || '#')} -> [${className}]|(${method})`;
@@ -29,6 +30,10 @@ export const executeTransaction = mysqlFacade.executeTransaction.bind(mysqlFacad
 
 export const initSession = dbManager.init.bind(dbManager);
 export const endSession = dbManager.end.bind(dbManager);
+
+export const addInternalPool = dbManager.createConnectionPool.bind(dbManager);
+export const setMiddleware = queryBuilder.use.bind(queryBuilder);
+export const removeMiddleware = queryBuilder.removeMiddleware.bind(queryBuilder);
 
 export const createPool = createPool_;
 export const Types = Types_;
