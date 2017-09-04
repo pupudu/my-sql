@@ -4,23 +4,23 @@
 [![Build Status](https://travis-ci.org/pupudu/my-sql.svg?branch=master)](https://travis-ci.org/pupudu/my-sql)
 [![Coverage Status](https://coveralls.io/repos/github/pupudu/my-sql/badge.svg?branch=master)](https://coveralls.io/github/pupudu/my-sql?branch=master)
 
-my-sql is a wrapper on the popular npm [mysql](https://www.npmjs.com/package/mysql) 
-package for providing means to painlessly interact with a mysql database. 
+my-sql is a wrapper on the popular [mysql](https://www.npmjs.com/package/mysql) 
+package for easily executing mysql **queries** and **transactions**. The pain of managing connection pools and
+releasing connections after executing a query, is all taken care of internally. My-Sql also provides the 
+ability to add custom middleware to modify the query and arguments dynamically. 
 
-**This library by default exposes everything that mysql exposes**. Thus you 
-don't need to install mysql separately if you use my-sql.
+**This library by default exposes everything that mysql exposes. Thus you don't need to install 
+mysql separately if you use my-sql.**
  
- In other words, **my-sql** is **mysql** + some_extras
-
-The idea is that the pain of creating and managing a connection pool, and
-the need to release connections as required is taken care of internally, without
-compromising any performance at all.
+ In simple words, `my-sql` is `mysql` + **more_features**
 
 ## Table of Contents
 
 - [Install](#install)
 - [Migrating from mysql](#migrating-from-mysql)
 - [Basic Usage](#basic-usage)
+- [Advanced Usage](#advanced-usage)
+- [Middleware](#middleware)
 - [Closing All Connections](#closing-all-connections)
 
 ## Install
@@ -77,16 +77,17 @@ initSession({
 Then you can simply execute queries or transactions on the `my_db` database. 
 
 ```js
-    executeQuery('SELECT * FROM test_table WHERE count > ? LIMIT ?', [100, 10])
-        .then((result)=>{
-            // Do something with the result array  
-        })
-        .catch((err)=>{
-            // Some error has occured
-        });
+executeQuery('SELECT * FROM test_table WHERE count > ? LIMIT ?', [100, 10])
+    .then((result)=>{
+        // Do something with the result array  
+    })
+    .catch((err)=>{
+        // Some error has occurred
+    });
 ```
     
-or multiple queries as an atomic transaction
+or multiple queries as an atomic transaction. We will take care of rolling back the transaction if something
+goes wrong and make sure that the result is consistent.
 
 ```js
 executeTransaction({
@@ -98,12 +99,145 @@ executeTransaction({
         args: ["Dodan"]
     }]
 }).then((results)=>{
-    // Do something with the results array array (i.e: an array of result arrays)  
+    // Do something with the results array array (i.e: an array of result rows)  
+}).catch((err)=>{
+    // Some error has occurred
 });
 ```
 
 **As of now all new methods send back data as promises. If you want us to provide support for
 callbacks, please open an issue in the github repository.**
+
+## Advanced Usage
+
+When using the `executeQuery` method, you can specify an options object as the 
+first argument instead of the query itself. All possible built in fields are listed below
+
+```json
+{
+    "query": "SELECT * FROM ...",
+    "args": [],
+    "pool": "vipPool",
+    "lengthConstraint": 5555
+}
+```
+
+For the `executeTransaction` method, you should anyway specify an object{query, args} array. The `pool`
+and `lengthConstraint` arguments should be supplied after the {query,args} array.
+
+you already know what `query` and `args` stand for. So let's talk about the other two fields.
+
+##### Pool
+When initializing the my-sql session by providing the database configs, we internally create a connection
+ pool. This is the default connection pool. It will be used whenever you don't specify a connection pool 
+  explicitly. However, you can use the `addInternalPool` method to create any number of additional 
+  connection pools. This is useful when you want to have different thresholds for different use cases. 
+  *If you don't understand why you need additional connection pools, you probably don't.*
+
+```js
+import {addInternalPool} from 'my-sql';
+
+addInternalPool("vipPool", 5);
+```
+
+addInternalPool takes takes the form, `addInternalPool(poolName, poolSize, [overrideConfig])`. The optional 
+3rd argument is useful when the pool should be configured with database config which is different from the
+one you specified in `initSession` method. It is worth noting that even the database can be different here.
+
+Now that a pool with name `vipPool` is created, you can use it as follows.
+
+```js
+executeQuery('SELECT * FROM test_table WHERE count > ? LIMIT ?', [100, 10], {pool: "vipPool"})
+    .then((result)=>{
+        // Do something with the result array  
+    })
+    .catch((err)=>{
+        // Some error has occurred
+    });
+```
+or 
+```js
+executeQuery({
+    query: 'SELECT * FROM test_table WHERE count > ? LIMIT ?', 
+    args:[100, 10], 
+    pool: "vipPool"
+})
+    .then((result)=>{
+        // Do something with the result array  
+    })
+    .catch((err)=>{
+        // Some error has occurred
+    });
+```
+
+##### Length Constraint
+This parameter is useful when you have queries that group concat columns. When the concatenated string is
+too long, it can cause problems. So to avoid that you can specify the maximum number of characters that 
+would be concatenated. The rest will be discarded. 
+
+You can pass in `true` as the lengthConstraint to use the default value of 5555 which is JSON parse-able.
+
+## Middleware
+One of the coolest things about this library is the ability to use custom middleware. A middleware in
+my-sql context is a function which dynamically modifies the arguments supplied to the query execution method.
+The function will basically accept the original options argument and will return a modified version of it.
+
+A middleware is identified by a unique key or a name. Later, when you call the execute method with an 
+ options object containing one or more middleware keys, corresponding middleware will be activated.
+ 
+Let's elaborate this with a trivial example.
+
+Suppose you have have an optional variable `count`, based on it's value you want to do the following.
+
+* CASE 1: If count < 10 then Do not modify query
+* CASE 1: If count > 10 then you want to add an additional where condition to the query
+* CASE 2: If count > 100 then you want to add an additional where condition and limit the results
+ 
+For this scenario you can break the query into two parts and append parts as necessary.
+
+```js
+import {setMiddleware} from 'my-sql';
+
+setMiddleware("countChecker", (options) => {
+    
+    let {query, count, suffix} = options;
+    if (count > 10) {
+       query += ` AND COUNT > ${count} ` // Case 1
+    } 
+    
+    query += suffix; // Complete the query
+    
+    if (count > 100) {
+        query += ' LIMIT 30'; // Case 2
+    }
+    
+    options.query = query;
+    
+    return options;
+});
+
+```
+
+Now when you can call the execute method as follows to activate the middleware,
+
+```js
+executeQuery({
+    query: "SELECT * FROM ABC WHERE VALUE > 4 ", // First part of the query
+    countChecker: true, // Activate the middleware
+    count: my_variable, // Variable required to modify the query
+    suffix: " GROUP BY CATEGORY " // Second part of the query
+})
+```
+
+When the my_variable changes the resulting query will also change as follows,
+
+* my_variable = 15 : `"SELECT * FROM ABC WHERE VALUE > 4 AND COUNT > 15 GROUP BY CATEGORY "`
+* my_variable = 4 : `"SELECT * FROM ABC WHERE VALUE > 4 GROUP BY CATEGORY "`
+* my_variable = 120 : `"SELECT * FROM ABC WHERE VALUE > 4 AND COUNT > 15 GROUP BY CATEGORY LIMIT 30"`
+
+If you don't want to use a middleware, you just simply ignore the key("countChecker" in this case).
+But you can even remove the middleware at any time by calling the `removeMiddleware` method with
+the corresponding key.
 
 ## Closing All Connections
 
