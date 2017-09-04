@@ -33,7 +33,7 @@ class DbManager {
         if (!poolName) {
             return this.pools[database].default;
         }
-        if (!this.pools[database][poolName] || !this.pools[database][poolName]) {
+        if (!this.pools[database] || !this.pools[database][poolName]) {
             return null;
         }
         return this.pools[database][poolName];
@@ -46,13 +46,20 @@ class DbManager {
      * @param {object} [overrideConfig] - optional db config if needed to override the default; possibly for a separate database
      */
     createConnectionPool(name, size, overrideConfig) {
-        let dbConfig = this.dbConfig || overrideConfig;
+        let dbConfig = overrideConfig || this.dbConfig;
 
         dbConfig = {
             ...dbConfig,
-            connectionLimit: size || [dbConfig.connectionLimit]
+            connectionLimit: size || dbConfig.connectionLimit
         };
-        this.pools[dbConfig.database || 'default'][name] = createPool(dbConfig);
+
+        const database = (overrideConfig || {}).database || 'default';
+
+        if (!this.pools[database]) {
+            this.pools[database] = {};
+        }
+
+        this.pools[database][name] = createPool(dbConfig);
     }
 
     /**
