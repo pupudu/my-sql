@@ -1,7 +1,7 @@
 {
   "name": "my-sql",
-  "version": "1.0.0",
-  "description": "Painless interaction with mysql without compromising performance or security",
+  "version": "1.0.13",
+  "description": "Painless yet High-Performance query and transaction execution for large-scale APIs",
   "main": "dist/index.js",
   "author": "pubudud",
   "license": "MIT",
@@ -20,6 +20,8 @@
     "zero-config",
     "security",
     "pluggable",
+    "middleware",
+    "modifiers",
     "transaction"
   ],
   "url": "https://github.com/pupudu/my-sql/issues",
@@ -59,7 +61,8 @@
     "mocha": "^3.5.0",
     "nyc": "^11.1.0",
     "pre-commit": "^1.2.2",
-    "pre-push": "^0.1.1"
+    "pre-push": "^0.1.1",
+    "sinon": "^3.2.1"
   },
   "pre-push": [
     "eslint",
