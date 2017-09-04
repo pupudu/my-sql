@@ -19,7 +19,7 @@ class MysqlFacade {
      * @param {object} options - options object
      *      @param {string} options.query - QueryHandler to be executed
      *      @param {Array} [options.args] - Arguments to the query if it is a prepared statement
-     *      @param {string} [options.poolType]  - Mysql connection pool type(General pool is selected if poolType undefined)
+     *      @param {string} [options.pool = DEFAULT]  - Mysql connection pool
      *      @param {boolean} [options.lengthConstraint] - Whether or not the group concat max length constraint should be applied
      *
      * @returns {Promise} <- Query result
@@ -57,7 +57,7 @@ class MysqlFacade {
      * Execute a transaction with any given number of queries
      *
      * @param {Object} options - transaction options.
-     *      @param {string} [options.poolType] - Mysql connection pool type.
+     *      @param {string} [options.pool] - Mysql connection pool type.
      *      @param {Object[]} options.queries - Object array of query and args pairs -> [{query: query, args:args}^n].
      *      @param {number} [options.queryCountThreshold] - Value to override the default TRANSACTION_QUERY_COUNT_THRESHOLD
      * @returns {Promise} - Transactions results as an object

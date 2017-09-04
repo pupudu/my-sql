@@ -17,19 +17,19 @@ class QueryHandler {
      * @param {object} options - options object
      *      @param {string} options.query - QueryHandler to be executed
      *      @param {Array} [options.args] - Arguments to the query if it is a prepared statement
-     *      @param {string} [options.poolType]  - Mysql connection pool type(General pool is selected if poolType undefined)
+     *      @param {string} [options.pool = DEFAULT]  - Mysql connection pool
      *      @param {boolean} [options.lengthConstraint] - Whether or not the group concat max length constraint should be applied
      * @returns {Promise} - result
      */
     executeQuery(options) {
         return new Promise((resolve, reject) => {
 
-            const connectionPool = dbManager.getConnectionPool(options.poolType);
+            const connectionPool = dbManager.getConnectionPool(options.pool);
 
-            // Check if the specified poolType is a valid one
+            // Check if the specified pool is a valid one
             if (!connectionPool) {
-                const err = new Error('Invalid poolType');
-                err.appendDetails('QueryHandler', 'executeQuery', `PoolType: ${options.poolType}`);
+                const err = new Error('Invalid pool type');
+                err.appendDetails('QueryHandler', 'executeQuery', `Pool: ${options.pool}`);
                 return reject(err);
             }
 

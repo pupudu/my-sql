@@ -14,22 +14,19 @@ class TransactionHandler {
      * Execute a transaction with any given number of queries
      *
      * @param {Object} options - transaction options.
-     *      @param {string} [options.poolType] - Mysql connection pool type.
+     *      @param {string} [options.pool = DEFAULT] - Mysql connection pool type.
      *      @param {Object[]} options.queries - Object array of query and args pairs -> [{query: query, args:args}^n].
      * @returns {Promise} - Transactions results as an object
      */
     executeTransaction(options) {
         return new Promise((resolve, reject) => {
 
-            // Parameter destructing
-            const {queries, poolType} = options;
+            const connectionPool = dbManager.getConnectionPool(options.pool);
 
-            const connectionPool = dbManager.getConnectionPool(poolType);
-
-            // Check if the specified poolType is a valid one
+            // Check if the specified pool is a valid one
             if (!connectionPool) {
-                const err = new Error('Invalid poolType');
-                err.appendDetails('TransactionHandler', 'executeQuery', `PoolType: ${options.poolType}`);
+                const err = new Error('Invalid pool type');
+                err.appendDetails('TransactionHandler', 'executeQuery', `Pool: ${options.pool}`);
                 return reject(err);
             }
 
@@ -45,7 +42,7 @@ class TransactionHandler {
                         return reject(err);
                     }
 
-                    worker.executeOrRollbackLoop(conn, queries, 0)
+                    worker.executeOrRollbackLoop(conn, options.queries, 0)
                         .then((results) => {
                             conn.release();
                             return resolve(results);
