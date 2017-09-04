@@ -3,6 +3,7 @@
 [![Code Climate](https://codeclimate.com/github/pupudu/my-sql/badges/gpa.svg)](https://codeclimate.com/github/pupudu/my-sql)
 [![Build Status](https://travis-ci.org/pupudu/my-sql.svg?branch=master)](https://travis-ci.org/pupudu/my-sql)
 [![Coverage Status](https://coveralls.io/repos/github/pupudu/my-sql/badge.svg?branch=master)](https://coveralls.io/github/pupudu/my-sql?branch=master)
+[![License](https://img.shields.io/npm/l/sequelize.svg?maxAge=2592000?style=plastic)](https://github.com/pupudu/my-sql/blob/master/LICENSE)
 
 my-sql is a wrapper on the popular [mysql](https://www.npmjs.com/package/mysql) 
 package for easily executing mysql **queries** and **transactions**. The pain of managing connection pools and
@@ -12,7 +13,7 @@ ability to add custom middleware to modify the query and arguments dynamically.
 **This library by default exposes everything that mysql exposes. Thus you don't need to install 
 mysql separately if you use my-sql.**
  
- In simple words, `my-sql` is `mysql` + **more_features**
+ In simple words, `my-sql`  =  `mysql` + **awesome_features**
 
 ## Table of Contents
 
@@ -31,27 +32,24 @@ npm install my-sql
 
 ## Migrating from mysql
 
-The default export in this library is the original `mysql` package. For example you can
-do the following.
+The default export in this library is the original `mysql` package. All other exports of the `mysql` package
+are also exported by `my-sql` *without any modification*. 
+
+Thus the migration involves only the following change; wherever you are importing something from the 
+original `mysql` package, just replace it with `my-sql`.
+
+For example
 
 ```js
-import mysql from 'my-sql'
-
-mysql.createConnection({/*database_config*/});
+import mysql, {createConnection, createPool} from 'my-sql';
 ```
-    
-or in another way,
+... is identical to ...
 
 ```js
-import {createPool} from 'my-sql';
+import mysql, {createConnection, createPool} from 'mysql';
 ```
 
-This library will always continue to be up-to-date with the original mysql package.
-
-Thus the migration involves only the following change; wherever you are importing
-something from the original `mysql` package, just replace it with `my-sql`.
- 
- That is Replace, `import mysql from 'mysql'` with `import mysql from 'my-sql'`
+**This library will always continue to be up-to-date with the original mysql package.**
      
 Please refer to the [original docs](https://www.npmjs.com/package/mysql) to see what 
 awesome things that [npm mysql](https://www.npmjs.com/package/mysql) can do. 
@@ -187,9 +185,9 @@ A middleware is identified by a unique key or a name. Later, when you call the e
  
 Let's elaborate this with a trivial example.
 
-Suppose you have have an optional variable `count`, based on it's value you want to do the following.
+Suppose you have have an optional variable `count` and based on its value, you want to do the following.
 
-* CASE 1: If count < 10 then Do not modify query
+* CASE 1: If count < 10 then Do not modify the query
 * CASE 1: If count > 10 then you want to add an additional where condition to the query
 * CASE 2: If count > 100 then you want to add an additional where condition and limit the results
  
